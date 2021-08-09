@@ -3,9 +3,6 @@ const cors = require('cors');
 const app = express();
 const SQL = require('./sql.js');
 
-//const notes = new SQL()
-//SQL.constructor();
-
 SQL.openDB();
 
 app.use(cors({
@@ -14,27 +11,31 @@ app.use(cors({
 const port = 3001
 database = []
 
-app.get('/getdatabase', (req, res) => {
-  res.json(SQL.all())
+app.get('/getdatabase', async (req, res) => {
+  const x = await SQL.all();
+  res.json(x);
 })
 
-app.get('/addnote/:note', (req, res) => {
-  SQL.insert(req.params.note, "2020-08-09");
-  const x = SQL.all()
-  console.log(x)
-  res.json(x)
 
-  //database = [...database, req.params.note]
-  //res.json(database)
+app.get('/addnote/:note', async (req, res) => {
+var today = new Date();
+var date;
+date = today.getFullYear() + '-'
+             + ('0' + (today.getMonth()+1)).slice(-2) + '-'
+             + ('0' + today.getDate()).slice(-2);
+
+  SQL.insert(req.params.note, date);
+  const x = await SQL.all();
+  res.json(x);
 })
 
-app.get('/removeNote/:index', (req, res) => {
-  //database.splice(req.params.index,1)
-  //res.json(database)
-  SQL.remove(req.params.index)
-  console.log(SQL.all());
-
+app.get('/removeNote/:id', async (req, res) => {
+  console.log(req.params.id)
+  SQL.remove(req.params.id);
+  const x = await SQL.all();
+  res.json(x);
 })
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

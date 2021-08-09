@@ -18,8 +18,11 @@
             Saved notes:
           </div>
 
-          <li class="mb-2" v-for="(item, index) in displayNotes" :key="item"> 
-            <a title="click to remove" href="#" @click="removeNote(index)">- {{item}}</a>
+          <li class="mb-2" v-for="(item) in notes" :key="item"> 
+            <a title="click to remove" href="#" @click="removeNote(item.id)">{{item.note}}</a>
+            <div class="text-gray-300 text-xs">
+              {{item.date}}
+            </div>
           </li>
         </ul>
       </div>
@@ -91,6 +94,8 @@ export default {
       .then(response => response.json())
       .then(data => {
         console.log(data)
+        this.notes = data
+        console.log(this.notes)
         //const obj = JSON.parse(data[0])
         //console.log(obj.note)
         //this.notes = JSON.parse(data.note);
@@ -103,8 +108,9 @@ export default {
       })
     },
 
-    removeNote(index) {
-      fetch(`http://localhost:3001/removeNote/${index}`)
+    removeNote(id) {
+      console.log(id);
+      fetch(`http://localhost:3001/removeNote/${id}`)
       .then(response => response.json())
       .then(data => {
         this.notes = data;

@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
-const sqliteJson = require('sqlite-json');
-//exporter = sqliteJson(db);
+const Promise = require('bluebird');
+
 
 function openDB(){
   this.db = new sqlite3.Database('notes.db', (err) => {
@@ -37,8 +37,20 @@ function remove(id){
   )
 }
 
-
 function all() {
+  const promise = new Promise((resolve, reject) => {
+    return this.db.all('SELECT * FROM notes ORDER BY id', (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+  return promise;
+}
+
+
   //sqliteJson(this.db).json('SELECT * FROM notes ORDER BY id', function (err, json) {
   //  if (err) {
   //    console.log(err)
@@ -48,15 +60,7 @@ function all() {
   //});
 //}
 
-  return this.db.all(
-    `SELECT * FROM notes ORDER BY id`, (err, result) => {
-      if (err) {
-       console.log(err)
-     } else {
-        console.log(result)
-    }
-  })  
-}
+
 
 
 module.exports = {openDB, insert, remove, get, all};

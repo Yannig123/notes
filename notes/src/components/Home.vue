@@ -90,12 +90,16 @@ export default {
       fetch(`http://localhost:3001/addnote/${this.note}`)
       .then(response => response.json())
       .then(data => {
-        //console.log(data);
-        this.notes = [...this.notes, data.pop()];
-        console.log('Note added.');
-        console.log(this.notes);
-        this.note = "";
-        this.filterNotes();
+        console.log(data)
+        //const obj = JSON.parse(data[0])
+        //console.log(obj.note)
+        //this.notes = JSON.parse(data.note);
+        //console.log(this.notes);
+        //this.notes = [...this.notes, data.pop()];
+        //console.log('Note added.');
+        //console.log(this.notes);
+        //this.note = "";
+        //this.filterNotes();
       })
     },
 

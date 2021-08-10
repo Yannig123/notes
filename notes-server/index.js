@@ -39,18 +39,6 @@ app.get('/removeNote/:id', async (req, res) => {
   res.json(x);
 })
 
-app.get('/filter/:filter', async (req, res) => {
-  console.log(req.params.filter)
-  const x = await SQL.selectNote(req.params.filter);
-  res.json(x);
-})
-
-app.get('/filterDate/:date', async (req, res) => {
-  console.log(req.params.date)
-  const x = await SQL.selectDate(req.params.date);
-  res.json(x);
-})
-
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })

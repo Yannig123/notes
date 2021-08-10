@@ -45,19 +45,15 @@ function all() {
   return promise;
 };
 
-function get(id) {
-  const promise = new Promise((resolve, reject) => {
-    return this.db.all(`SELECT * FROM notes WHERE id = ?`, [id], (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-  return promise;
-};
 
+module.exports = {openDB, insert, remove, all};
+
+
+
+
+
+
+/*
 function selectNote(filter) {
   filter = '#' + filter;
   const promise = new Promise((resolve, reject) => {
@@ -85,4 +81,17 @@ function selectDate(filter) {
   return promise;
 };
 
-module.exports = {openDB, insert, remove, get, all, selectNote, selectDate};
+function get(id) {
+  const promise = new Promise((resolve, reject) => {
+    return this.db.all(`SELECT * FROM notes WHERE id = ?`, [id], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+  return promise;
+};
+
+*/

@@ -18,7 +18,7 @@
             Saved notes:
           </div>
 
-          <li class="mb-2" v-for="(item) in notes" :key="item"> 
+          <li class="mb-2" v-for="(item) in displayNotes" :key="item"> 
             <a title="click to remove" href="#" @click="removeNote(item.id)">{{item.note}}</a>
             <div class="text-gray-300 text-xs">
               {{item.date}}
@@ -46,7 +46,8 @@ export default {
       note:"",
       notes:[], 
       displayNotes:[], 
-      filter:"",  
+      filter:"", 
+      hashfilter:"", 
       date:"",
     };
   },
@@ -68,6 +69,7 @@ export default {
       );
       this.notes = data;
       this.note = "";
+      this.displayNotes = this.notes
     },
 
     removeNote(id) {
@@ -75,62 +77,22 @@ export default {
       .then(response => response.json())
       .then(data => {
         this.notes = data;
+        this.displayNotes = this.notes
       })
     },
 
     filterNotes(){
-      if ((this.filter) == "") {
-        fetch(`http://localhost:3001/getDatabase`)
-        .then(response => response.json())
-        .then(data => {
-          this.notes = data;
-        })
+       if ((this.filter) == "") {
+        this.hashfilter = this.filter
       } else {
-        fetch(`http://localhost:3001/filter/${this.filter}`)
-        .then(response => response.json())
-        .then(data => {
-          this.notes = data
-        })
-      }
+        this.hashfilter = '#' + this.filter;
+        }
+      this.displayNotes = this.notes.filter(el => el.note.toLowerCase().indexOf(this.hashfilter.toLowerCase()) !== -1);
     },
 
     filterDate(){
-      if ((this.date) == "") {
-        fetch(`http://localhost:3001/getDatabase`)
-        .then(response => response.json())
-        .then(data => {
-          this.notes = data;
-        })
-      } else {
-        fetch(`http://localhost:3001/filterDate/${this.date}`)
-        .then(response => response.json())
-        .then(data => {
-          this.notes = data
-        })
-      }
+      this.displayNotes = this.notes.filter(el => el.date.toLowerCase().indexOf(this.date.toLowerCase()) !== -1);
     },
-
-    filterNotes2(){
-      console.log(this.filter);
-      this.displayNotes = this.notes.filter(el => el.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1);
-    },
-
-
-    /*
-    sendNote(){
-      fetch(`http://localhost:3001/addnote/${this.note}`)
-      .then(response => response.json())
-      .then(data => {
-        this.notes = data
-        this.note = "";
-        //this.notes = [...this.notes, data.pop()];
-        //this.displayNotes = this.notes;
-        //this.filterNotes();
-      })
-    },
-    
-
-    */ 
 
   }
   

@@ -120,8 +120,13 @@ export default {
         //this.filterNotes();
       })
     },
-    */
-        
+    
+    filterNotes(){
+      console.log("filter activated");
+      this.displayNotes = this.notes.filter(el => el.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1);
+    },
+    */ 
+
   }
   
 }

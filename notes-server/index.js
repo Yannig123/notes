@@ -41,14 +41,8 @@ app.get('/removeNote/:id', async (req, res) => {
 
 app.get('/filter/:filter', async (req, res) => {
   console.log(req.params.filter)
-  var x = []
-  if ((req.params.filter) == null) {
-    x = await SQL.all();
-  }
-  else {
-    x = await SQL.selectNote(req.params.filter);
-  }
-   res.json(x);
+  const x = await SQL.selectNote(req.params.filter);
+  res.json(x);
 })
 
 app.get('/filterDate/:date', async (req, res) => {

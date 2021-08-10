@@ -30,12 +30,33 @@ function insert(note, date) {
 };
 
 
+function insert2(note, date) {
+  this.db.run(
+    'INSERT INTO notes (note, date) VALUES (?, ?)',
+    [note, date], function (err) {
+      if (err) throw err; 
+      console.log(`A row has been inserted with rowid ${this.lastID}`);
+  });
+  const promise = new Promise((resolve, reject) =>{
+    return this.db.all(`SELECT * FROM notes WHERE id = ?`, [this.lastID], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+  return promise;
+};
+
+
 function remove(id){
   return this.db.run(
     'DELETE FROM notes WHERE id = ?',
     [id]
   )
-}
+};
+
 
 function all() {
   const promise = new Promise((resolve, reject) => {
@@ -48,34 +69,50 @@ function all() {
     });
   });
   return promise;
-}
-
-
-  //sqliteJson(this.db).json('SELECT * FROM notes ORDER BY id', function (err, json) {
-  //  if (err) {
-  //    console.log(err)
-  //  } else {
-  //    console.log(json)
-  //  }
-  //});
-//}
-
-
-
-
-module.exports = {openDB, insert, remove, get, all};
+};
 
 
 function get(id) {
-  return this.db.all(
-    `SELECT * FROM tasks WHERE id = ?`,
-      [id], 
-      (err, result) => {
+  const promise = new Promise((resolve, reject) => {
+    return this.db.all(`SELECT * FROM notes WHERE id = ?`, [id], (err, result) => {
       if (err) {
-        console.log(err)
+        reject(err);
       } else {
-        console.log(result)
-    }
-  })
+        resolve(result);
+      }
+    });
+  });
+  return promise;
 };
 
+
+function selectNote(filter) {
+  filter = '#' + filter;
+  const promise = new Promise((resolve, reject) => {
+    return this.db.all('SELECT * FROM notes WHERE instr(note, ?) > 0 ORDER BY id', [filter], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+  return promise;
+};
+
+
+function selectDate(filter) {
+  const promise = new Promise((resolve, reject) => {
+    return this.db.all('SELECT * FROM notes WHERE instr(date, ?) > 0 ORDER BY id', [filter], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+  return promise;
+};
+
+
+module.exports = {openDB, insert, insert2, remove, get, all, selectNote, selectDate};

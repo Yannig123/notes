@@ -7,7 +7,7 @@
       </div>
   
       <div class="flex justify-center ">
-        <button class="w-1/3 border-2 rounded-lg border-black border-dotted shadow-xl m-10 p-2 font-mono text-center font-semibold hover:text-red-600 hover:border-red-600" @click="sendNote">
+        <button class="w-1/3 border-2 rounded-lg border-black border-dotted shadow-xl m-10 p-2 font-mono text-center font-semibold hover:text-red-600 hover:border-red-600 transform hover:scale-105" @click="sendNote">
           SAVE NOTE
         </button>
       </div>
@@ -27,14 +27,14 @@
         </ul>
       </div>
 
-      <div class="flex justify-center ">
+      <div class="flex justify-center space-x-5">
         <input class="w-1/3 rounded-lg border-2 border-grey-50 border-dotted mt-6 p-1 text-center font-mono focus:border-black" v-model="filter" placeholder="#" @input="filterNotes()"/>
+        <input class="w-1/3 rounded-lg border-2 border-grey-50 border-dotted mt-6 p-1 text-center font-mono focus:border-black" v-model="date" placeholder="YYYY-MM-DD" @input="filterDate()"/>
       </div>
       
 
     </div>
   </div>
-
 
 <!--
     <div class="flex justify-center ">
@@ -52,19 +52,20 @@
         </table>
       </div>
   -->
-
-  
-
 </template>
 
+
+
 <script>
+import axios from 'axios'
+
 export default {
   data(){
     return{
       note:"",
       notes:[], 
       filter:"",  
-      displayNotes:[],
+      date:"",
     };
   },
 
@@ -78,6 +79,16 @@ export default {
   },
 
   methods: {
+    async sendNote() {
+      console.log('test')
+      const {data} = await axios.post(
+        'http://localhost:3001/addnote', 
+        { note: this.note }
+      );
+      this.notes = data;
+      console.log('test worked')
+    },
+
     saveNote() {
       console.log("this.note:")
       console.log(this.note);
@@ -89,39 +100,46 @@ export default {
       this.filterNotes();
     },
 
+/*
     sendNote(){
       fetch(`http://localhost:3001/addnote/${this.note}`)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
         this.notes = data
-        console.log(this.notes)
-        //const obj = JSON.parse(data[0])
-        //console.log(obj.note)
-        //this.notes = JSON.parse(data.note);
-        //console.log(this.notes);
+        this.note = "";
         //this.notes = [...this.notes, data.pop()];
-        //console.log('Note added.');
-        //console.log(this.notes);
-        //this.note = "";
+        //this.displayNotes = this.notes;
         //this.filterNotes();
       })
     },
+*/
 
     removeNote(id) {
-      console.log(id);
       fetch(`http://localhost:3001/removeNote/${id}`)
       .then(response => response.json())
       .then(data => {
         this.notes = data;
-        this.filterNotes();
       })
     },
 
     filterNotes(){
       console.log("filter activated");
-      this.displayNotes = this.notes.filter(el => el.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1);
+      fetch(`http://localhost:3001/filter/${this.filter}`)
+      .then(response => response.json())
+      .then(data => {
+        this.notes = data
+      //this.displayNotes = this.notes.filter(el => el.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1);
+      })
     },
+
+    filterDate(){
+      console.log("date filter activated");
+      fetch(`http://localhost:3001/filterDate/${this.date}`)
+      .then(response => response.json())
+      .then(data => {
+        this.notes = data
+      })
+    }
     
   }
   

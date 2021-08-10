@@ -35,26 +35,7 @@
 
     </div>
   </div>
-
-<!--
-    <div class="flex justify-center ">
-        <table class="min-w-full border-2 rounded-lg border-black border-dotted shadow-xl font-mono">
-          <tr>
-            <th colspan="2" class="m-3 border-2 rounded-lg border-black border-dotted">Saved notes</th>
-          </tr><tr>
-            <td class="p-2 border-2 rounded-lg border-black border-dotted"> name </td>
-            <td class="p-2 border-2 rounded-lg border-black border-dotted"> age </td>
-          </tr>
-          <tr v-for="item in notes" :key="item">
-              <td class="p-2 border-2 rounded-lg border-black border-dotted">{{item}}</td>
-              <td class="p-2 border-2 rounded-lg border-black border-dotted">X</td>
-          </tr>
-        </table>
-      </div>
-  -->
 </template>
-
-
 
 <script>
 import axios from 'axios'
@@ -74,33 +55,60 @@ export default {
     .then(response => response.json())
     .then(data => {
       this.notes = data;
-      this.displayNotes = this.notes;
     })
   },
 
   methods: {
     async sendNote() {
-      console.log('test')
       const {data} = await axios.post(
         'http://localhost:3001/addnote', 
         { note: this.note }
       );
       this.notes = data;
-      console.log('test worked')
-    },
-
-    saveNote() {
-      console.log("this.note:")
-      console.log(this.note);
-      //this.notes.push(this.note);
-      this.notes = [...this.notes, this.note]
-      console.log('Note added.');
-      console.log(this.notes);
       this.note = "";
-      this.filterNotes();
     },
 
-/*
+    removeNote(id) {
+      fetch(`http://localhost:3001/removeNote/${id}`)
+      .then(response => response.json())
+      .then(data => {
+        this.notes = data;
+      })
+    },
+
+    filterNotes(){
+      if ((this.filter) == "") {
+        fetch(`http://localhost:3001/getDatabase`)
+        .then(response => response.json())
+        .then(data => {
+          this.notes = data;
+        })
+      } else {
+        fetch(`http://localhost:3001/filter/${this.filter}`)
+        .then(response => response.json())
+        .then(data => {
+          this.notes = data
+        })
+      }
+    },
+
+    filterDate(){
+      if ((this.date) == "") {
+        fetch(`http://localhost:3001/getDatabase`)
+        .then(response => response.json())
+        .then(data => {
+          this.notes = data;
+        })
+      } else {
+        fetch(`http://localhost:3001/filterDate/${this.date}`)
+        .then(response => response.json())
+        .then(data => {
+          this.notes = data
+        })
+      }
+    },
+
+    /*
     sendNote(){
       fetch(`http://localhost:3001/addnote/${this.note}`)
       .then(response => response.json())
@@ -112,35 +120,8 @@ export default {
         //this.filterNotes();
       })
     },
-*/
-
-    removeNote(id) {
-      fetch(`http://localhost:3001/removeNote/${id}`)
-      .then(response => response.json())
-      .then(data => {
-        this.notes = data;
-      })
-    },
-
-    filterNotes(){
-      console.log("filter activated");
-      fetch(`http://localhost:3001/filter/${this.filter}`)
-      .then(response => response.json())
-      .then(data => {
-        this.notes = data
-      //this.displayNotes = this.notes.filter(el => el.toLowerCase().indexOf(this.filter.toLowerCase()) !== -1);
-      })
-    },
-
-    filterDate(){
-      console.log("date filter activated");
-      fetch(`http://localhost:3001/filterDate/${this.date}`)
-      .then(response => response.json())
-      .then(data => {
-        this.notes = data
-      })
-    }
-    
+    */
+        
   }
   
 }
